@@ -86,10 +86,7 @@ def main():
                         if os.path.isfile(os.path.join(path + fichero , fichero + "_" + anomes + dia + ".txt" )):
                             if exists(path + fichero + "/" +  fichero + "_" + anomes + dia + ".txt"):
                                 if thr<=n_threads:
-                                    if thr==0:
-                                        port=20023
-                                    if thr==1:
-                                        port=20024                                        
+                                    port=20024                                        
                                     thread = threading.Thread(target=threaded_process, args=(thr,fichero,path,anomes,dia,port),)
                                     thread_list.append(thread)
                                     thread_list[thr].start()
