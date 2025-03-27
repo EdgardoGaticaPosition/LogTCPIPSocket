@@ -5,6 +5,16 @@ import sys
 from os.path import exists
 import threading
 
+def cargar_variables_entorno():
+    env_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '../.env')
+    load_dotenv(dotenv_path=env_path)
+    logger.debug(f"Listener Server: {os.getenv('listener_server')}")
+    logger.debug(f"Listener Port: {os.getenv('listener_port')}")
+    logger.debug(f"Path log IMEI: {os.getenv('path_log_imei')}")
+    logger.debug(f"Uvicacion de archivos log: {os.getenv('local_path_log')}")
+    logger.debug(f"IMEI's: {os.getenv('imeis')}")
+    logger.debug(f"Ano Mes: {os.getenv('anomes')}")
+
 def threaded_process(thr,fichero,path,anomes,dia,port):
     """ Your main process which runs in thread for each chunk"""
     try:   
@@ -16,7 +26,7 @@ def threaded_process(thr,fichero,path,anomes,dia,port):
 
         print('Socket Created : '+str(thr))
 
-        ROBOT_IP= "192.168.168.63"
+        ROBOT_IP = os.getenv('Listener_server')
         ROBOT_PORT = port
         client.connect((ROBOT_IP,ROBOT_PORT))
 
@@ -45,18 +55,21 @@ def threaded_process(thr,fichero,path,anomes,dia,port):
         print('error with item' + str(e))  
 
 def main():
+    cargar_variables_entorno()
         # Splitting the items into chunks equal to number of threads
 
-    arrPath=["log2"] 
-    IMEI=["863457051884078","863457051915120"] 
+    arrPath=[{os.getenv('path_log_imei')}] 
+    #"/home/egatica/Escritorio/TCP_GATEWAY/nPath/"
+    local_path_log=os.getenv('local_path_log')
+    IMEI=[{os.getenv('imeis')}] 
     dia=""
     p=0
     p_fin=len(arrPath)       
-    anomes="202503"
+    anomes=os.getenv('anomes')
 
     for nPath in arrPath:
         for i in [12]:
-            path="/home/egatica/Escritorio/TCP_GATEWAY/nPath/"+anomes+"xx/"         
+            path=local_path_log+anomes+"xx/"         
             if i<=9:
                 dia= "0" + str(i)
                 sig_dia=""
@@ -86,7 +99,7 @@ def main():
                         if os.path.isfile(os.path.join(path + fichero , fichero + "_" + anomes + dia + ".txt" )):
                             if exists(path + fichero + "/" +  fichero + "_" + anomes + dia + ".txt"):
                                 if thr<=n_threads:
-                                    port=20024                                        
+                                    port=os.getenv('listener_port')                                        
                                     thread = threading.Thread(target=threaded_process, args=(thr,fichero,path,anomes,dia,port),)
                                     thread_list.append(thread)
                                     thread_list[thr].start()
