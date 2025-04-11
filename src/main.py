@@ -2,8 +2,12 @@ import socket
 import time
 import os
 import sys
+import logging
 from os.path import exists
 import threading
+from dotenv import load_dotenv
+
+logger = logging.getLogger(__name__)
 
 def cargar_variables_entorno():
     env_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '../.env')
@@ -58,7 +62,7 @@ def main():
     cargar_variables_entorno()
         # Splitting the items into chunks equal to number of threads
 
-    arrPath=[{os.getenv('path_log_imei')}] 
+    arrPath=[str(os.getenv('path_log_imei'))] 
     #"/home/egatica/Escritorio/TCP_GATEWAY/nPath/"
     local_path_log=os.getenv('local_path_log')
     IMEI=[{os.getenv('imeis')}] 
